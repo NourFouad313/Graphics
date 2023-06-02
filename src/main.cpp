@@ -55,7 +55,7 @@ int main(int argc ,char *argv[]){
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
         angle++;
-        
+
         // texture units activision
         texture_handler::active(0);
         texture0->bind();
