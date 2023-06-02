@@ -10,7 +10,7 @@
 #include <openGL/utils.hpp>
 SDL_Window *window;
 SDL_GLContext GLcontext;
-uint32_t angle = 0;
+uint32_t angle = 1;
 
 int main(int argc ,char *argv[]){
     ////////////////////////////////////////////////////////////////////
@@ -55,6 +55,7 @@ int main(int argc ,char *argv[]){
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
         angle++;
+        
         // texture units activision
         texture_handler::active(0);
         texture0->bind();
