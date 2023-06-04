@@ -3,7 +3,9 @@
 #include <limits>
 #include <glad/glad.h>
 #include <SFML/Graphics.hpp>
-#include <GLM/gtc/type_ptr.hpp>
+#include <GLM/glm.hpp>
+#include <GLM/gtx/transform.hpp>
+#include <GLM/gtx/rotate_vector.hpp>
 #include <shaders_handler.hpp>
 #include <texture_handler.hpp>
 #include <utils.hpp>
@@ -40,7 +42,7 @@ int main(int argc, char *argv[])
 
     ///////////////////////////////////////////////////////////////////
 
-    ut::create_pipeline(ut::positions, sizeof(ut::positions), ut::indices, sizeof(ut::indices));
+    ut::vertex_data(ut::positions, sizeof(ut::positions), ut::indices, sizeof(ut::indices));
 
     ///////////////////////////////////////////////////////////////////
 
@@ -50,10 +52,9 @@ int main(int argc, char *argv[])
 
     ///////////////////////////////////////////////////////////////////
 
-    glClearColor(0.2,0.5,0.5,1);
+    glClearColor(1.0,1.0,0.5,1);
 
     ///////////////////////////////////////////////////////////////////
-
 
     while (state)
     {
@@ -70,11 +71,11 @@ int main(int argc, char *argv[])
         //  transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, 0.0f) /*these are added to vertices in vertex shader*/);
         transform = glm::rotate(transform /*identity mat*/,
         glm::radians((float) ut::get_time(c,t) ) /*angle*/,
-         glm::vec3(0.5f, 0.5f, -0.5f) /*rotation axis*/);
+        glm::vec3(0.5f, 0.5f, -0.5f) /*rotation axis*/);
 
         // get matrix's uniform location and set matrix &sending it to gpu
         unsigned int transformLoc = glGetUniformLocation(shaders->get_program_id(), "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
         // texture units activision
         texture_handler::active(0);

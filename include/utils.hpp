@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-// #include <limits>
 
 using std::string;
 
@@ -38,7 +37,7 @@ namespace ut
         window->setVerticalSyncEnabled(true);
     }
     /////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief initializing glew
+    /// @brief initializing glad
     int init_openGL(){
         if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(sf::Context::getFunction)))
     {
@@ -49,7 +48,8 @@ namespace ut
         return 0;
     }
     /////////////////////////////////////////////////////////////////////////////////////////////
-    void create_pipeline(float positions[],size_t szposition,uint32_t indices[],size_t szindices){
+    /// @brief sending vertex data to gpu
+    void vertex_data(float positions[],size_t szposition,uint32_t indices[],size_t szindices){
     glGenVertexArrays(1,VAO);
     glGenBuffers(1,VBO);
     glGenBuffers(1,EBO);

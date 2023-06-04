@@ -1,9 +1,7 @@
 #pragma once
-// #include <GL/glew.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <string>
 
 class shaders_handler
 {

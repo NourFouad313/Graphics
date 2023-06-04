@@ -1,5 +1,5 @@
 all:
-	g++ -o3 src/*.cpp lib/GLAD/src/*  -std=c++17                \
+	g++ -o3 src/*.cpp lib/GLAD/src/*  -std=c++17                 \
 	-ldl -lsfml-graphics -lsfml-window -lsfml-system  -lGL      \
 	-Iinclude                                                   \
 	-Ilib/                                                      \
