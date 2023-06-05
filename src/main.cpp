@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
     ///////////////////////////////////////////////////////////////////
 
-    ut::vertex_data(ut::positions, sizeof(ut::positions), ut::indices, sizeof(ut::indices));
+    ut::vertex_data(ut::vertices, sizeof(ut::vertices));
 
     ///////////////////////////////////////////////////////////////////
 
@@ -51,9 +51,8 @@ int main(int argc, char *argv[])
     shaders->setInt("texture0", 0);
 
     ///////////////////////////////////////////////////////////////////
-
-    glClearColor(1.0,1.0,0.5,1);
-
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0.3,0.3,0.3,1);
     ///////////////////////////////////////////////////////////////////
 
     while (state)
@@ -62,28 +61,30 @@ int main(int argc, char *argv[])
         window->pollEvent(event);
         ut::handle_events(event, window,state);
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        glm::mat4 view          = glm::mat4(1.0f);
+        glm::mat4 projection    = glm::mat4(1.0f);
+        view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));
+        projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
 
-        // create transformations & reseting it
-        glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-
-        // moving vertices by the glm::vec3 values
-        //  transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, 0.0f) /*these are added to vertices in vertex shader*/);
-        transform = glm::rotate(transform /*identity mat*/,
-        glm::radians((float) ut::get_time(c,t) ) /*angle*/,
-        glm::vec3(0.5f, 0.5f, -0.5f) /*rotation axis*/);
-
-        // get matrix's uniform location and set matrix &sending it to gpu
-        unsigned int transformLoc = glGetUniformLocation(shaders->get_program_id(), "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaders->get_program_id(),"view"), 1, GL_FALSE, &view[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shaders->get_program_id(),"projection"), 1, GL_FALSE, &projection[0][0]);
 
         // texture units activision
         texture_handler::active(0);
         texture0->bind();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        for (uint8_t i = 0; i < 10; i++)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, ut::cubePositions[i]);
+            model = glm::rotate(model,ut::get_time(c,t),glm::vec3(1.0,0.5,1.0));
+            glUniformMatrix4fv(glGetUniformLocation(shaders->get_program_id(),"model"), 1, GL_FALSE, &model[0][0]);   
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         //Display on screen what has been rendered to the window so far  
         window->display();//suppressed: 24 bytes in 1 blocks
+        //clear window for the next frame buffer
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     ut::destroy_objects();
     delete window;

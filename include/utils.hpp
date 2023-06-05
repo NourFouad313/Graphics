@@ -10,20 +10,68 @@ namespace ut
     uint32_t* EBO = new uint32_t;
 
     ///////////////////////////////////////////////////////////////////
-    float positions[] = {
-        // positions          // texture coords
-         0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
+    float vertices[] = {
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
+    ///////////////////////////////////////////////////////////////////
+        glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f, 0.0f, 0.0f),
+        glm::vec3( 2.0f, 5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f, 3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f, 2.0f, -2.5f),
+        glm::vec3( 1.5f, 0.2f, -1.5f),
+        glm::vec3(-1.3f, 1.0f, -1.5f)
+};
     ///////////////////////////////////////////////////////////////////
     unsigned int indices[] = {  
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
     };
     ///////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief initializing window
     /// @param window 
     /// @param GLcontext 
@@ -33,10 +81,10 @@ namespace ut
         settings.antialiasingLevel = 8;
         settings.majorVersion = 3;          
         settings.minorVersion = 0;
-        window->create(sf::VideoMode(600, 600), "openGL", sf::Style::Default, settings);
+        window->create(sf::VideoMode(800, 600), "openGL", sf::Style::Default, settings);
         window->setVerticalSyncEnabled(true);
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
     /// @brief initializing glad
     int init_openGL(){
         if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(sf::Context::getFunction)))
@@ -49,21 +97,23 @@ namespace ut
     }
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief sending vertex data to gpu
-    void vertex_data(float positions[],size_t szposition,uint32_t indices[],size_t szindices){
+    void vertex_data(float positions[],size_t szposition,uint32_t indices[] = nullptr,size_t szindices = 0){
     glGenVertexArrays(1,VAO);
-    glGenBuffers(1,VBO);
-    glGenBuffers(1,EBO);
     //bind means choose that thing and all func calls after it will affect that thing 
     //VAO stores VBO & EBO
     glBindVertexArray(*(VAO));
     //when you bind a VBO all VBO changing operations (such as glBufferData) will affect the last bound VBO. 
     //AFTER binding the buffer any call to a buffer func on target GL_ARRAY_BUFFER will configure the currently binded buffer wich is VBO.
+    glGenBuffers(1,VBO);
     glBindBuffer(GL_ARRAY_BUFFER,*(VBO));
     //is a function specifically targeted to copy user-defined data into the currently bound buffer
     glBufferData(GL_ARRAY_BUFFER,szposition,positions,GL_STATIC_DRAW);
     //EBO
+    if(indices != nullptr && szindices == 0){
+    glGenBuffers(1,EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(EBO));
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, szindices, indices, GL_STATIC_DRAW);
+    }
     // attributes
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -101,10 +151,10 @@ namespace ut
     /////////////////////////////////////////////////////////////////////////////////////////////////
     float get_time(sf::Clock &c , sf::Time &t){
     t = c.getElapsedTime();
-     if (t.asSeconds()*20==std::numeric_limits<float>::max()){
-        t = sf::seconds(0);
+     if (t.asSeconds()==std::numeric_limits<float>::max()){
+        c.restart();
      }
-     return t.asSeconds()*20;
+     return t.asSeconds();
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /// @param file_name 
