@@ -90,6 +90,9 @@ public:
     {
         glUniform1f(glGetUniformLocation(this->programID, name.c_str()), value);
     }
+    void setMatrix(const std::string &name, glm::mat4 matrix){
+        glUniformMatrix4fv(glGetUniformLocation(this->programID, name.c_str()), 1, false, &matrix[0][0]);
+    }
      unsigned int get_program_id(){
         return this->programID;
     }

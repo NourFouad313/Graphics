@@ -66,8 +66,8 @@ int main(int argc, char *argv[])
         view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));
         projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
 
-        glUniformMatrix4fv(glGetUniformLocation(shaders->get_program_id(),"view"), 1, GL_FALSE, &view[0][0]);
-        glUniformMatrix4fv(glGetUniformLocation(shaders->get_program_id(),"projection"), 1, GL_FALSE, &projection[0][0]);
+        shaders->setMatrix("view", view);
+        shaders->setMatrix("projection", projection);
 
         // texture units activision
         texture_handler::active(0);
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, ut::cubePositions[i]);
             model = glm::rotate(model,ut::get_time(c,t),glm::vec3(1.0,0.5,1.0));
-            glUniformMatrix4fv(glGetUniformLocation(shaders->get_program_id(),"model"), 1, GL_FALSE, &model[0][0]);   
+            shaders->setMatrix("model",model);   
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
