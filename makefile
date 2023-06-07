@@ -8,6 +8,5 @@ all:
 	-Llib/SFML/lib                                              \
 	-o bin/a.out && bin/./a.out         
 check:
-	/home/nour/valgrind/./valgrind  ./bin/a.out        /*latest valgrind version*/                \
-	# valgrind  ./bin/a.out                                /*old valgrind version*/               \
+	valgrind  ./bin/a.out                                                                         \
 	--leak-check=full  -s    --leak-check=full --show-reachable=yes --show-leak-kinds=all         \
